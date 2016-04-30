@@ -62,6 +62,7 @@ namespace bingocalc
 
         private void path_Load(object sender, EventArgs e)
         {
+            //If we have data given to us, fill out the forms
             if (name != null)
             {
                 nameBox.Text = name;
@@ -272,8 +273,8 @@ namespace bingocalc
                     }
             }
         }
-
-        private void createArea_Click(object sender, EventArgs e)
+        //Error check then return with the path data
+        private void createPath_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
             //error checking
@@ -310,7 +311,7 @@ namespace bingocalc
                 this.DialogResult = DialogResult.None;
                 return;
             }
-
+            //no errors, collect all the data
             name = nameBox.Text;
             areaDestination = areaDestinationBox.SelectedItem.ToString();
             nodeStart = nodeStartBox.SelectedItem.ToString();

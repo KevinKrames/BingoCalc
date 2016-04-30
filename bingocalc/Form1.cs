@@ -68,41 +68,45 @@ namespace bingocalc
                 ApplicationId = Constants.databaseKey1,
                 Server = Constants.databaseKey2
             });
-
+            //Call an async function init so we can use await
             init();
         }
-
+        //Initial function to sync the database and check for updates
         public async void init() {
-            //done checking online version and setting up our DBID, were up to date with our app
+            //disable input and check for an update
             disableInput();
             label1.Text = "Checking for Updates";
             await checkOnlineVersion();
             label1.Text = "Syncing Databases";
 
             ArrayList dl = new ArrayList();
-
+            //Check DBID to see if theres any changes in the data
             await syncDBID(dl);
             if (dl.Count > 0)
             {
+                //If dl has an item then we need to download the new data
                 await downloadDatabase();
             }
 
-
+            //Now our version + database is up to date
             label1.Text = "Up to Date - ID:" + ID;
             updateBoxs();
             enableInput();
         }
-
+        //Called when the main form loads
         private void Form1_Load(object sender, EventArgs e)
         {
+            //
             update.updateMe(updaterPrefix, Application.StartupPath + @"\");
             unpackCommandline();
         }
 
         
-        //Makes sure that the DB is up to date the calls the appropriate function via the data array
+        //this is a the generic function that checks if our database is up to date.
+        //This will call different functions based on the first item in the ArrayList data
         public async void checkDB(ArrayList data)
         {
+            //Syncing database stuff
             disableInput();
             label1.Text = "Checking for Updates";
             await checkOnlineVersion();
@@ -117,7 +121,7 @@ namespace bingocalc
             }
 
 
-            //Now that the DB is up to date, call the appropriate function
+            //Now that the DB is up to date, call the appropriate function according to data[0]
             if (data.Count > 0)
             {
                 string state = (string)data[0];
@@ -163,7 +167,7 @@ namespace bingocalc
                         MessageBox.Show("Incorrect check DB input.", "Check Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break;
                 } // end of switch statement on data
-            }
+            } //end error check for data.Count > 0
             else
             {
                 //error
@@ -174,7 +178,6 @@ namespace bingocalc
             updateBoxs();
             enableInput();
         }
-        //Downloads all data that is needed from the server
         
         //uploads the current local DBID to the server
         private async Task uploadDBID()
@@ -182,7 +185,7 @@ namespace bingocalc
             ParseObject result = new ParseObject("DBID");
             try
             {
-                //If an online version exists, delete it first
+                //Query for the DBID on the server
                 var query = from DBID in ParseObject.GetQuery("DBID")
                             where DBID.Get<string>("ID") != "-1"
                             select DBID;
@@ -202,7 +205,7 @@ namespace bingocalc
                 }
                 else
                 {
-                    //
+                    //We found the DBID on the server, update it with our DBID values
                     result["ID"] = Int32.Parse(DBID["ID"].ToString());
                     result["areas"] = Int32.Parse(DBID["areas"].ToString());
                     result["nodes"] = Int32.Parse(DBID["nodes"].ToString());
@@ -210,7 +213,7 @@ namespace bingocalc
                     result["objects"] = Int32.Parse(DBID["objects"].ToString());
                     await result.SaveAsync();
                 }
-            }
+            }// end of try
             catch (Exception e)
             {
                 MessageBox.Show("Upload DBID failed, please try again.", "Download Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -220,6 +223,7 @@ namespace bingocalc
         }
 
         //Downloads all data that is needed from the server
+        //This may be optimized later to only download the things needed
         private async Task downloadDatabase()
         {
             //Download each item
@@ -229,13 +233,13 @@ namespace bingocalc
             await downloadObjects();
             await downloadDBID();
         }
-
+        //Downloads all the online areas and saves them locally
         private async Task downloadAreas()
         {
             ParseObject result;
             try
             {
-                //If an online areas exists
+                //Query the for the areas
                 var query = from area in ParseObject.GetQuery("area")
                             where area.Get<string>("ID") != "-1"
                             select area;
@@ -258,25 +262,26 @@ namespace bingocalc
                 Close();
             }
         }
+        //Downloads all the online nodes and saves them locally
         private async Task downloadNodes()
         {
             ParseObject result;
             try
             {
-                //If an online nodes exists
+                //Query the nodes from the server
                 var query = from node in ParseObject.GetQuery("node")
                             where node.Get<string>("ID") != "-1"
                             select node;
                 IEnumerable<ParseObject> results = await query.FindAsync();
                 //Clear our array
                 nodes.Clear();
-                //Add all the online objects to our database
+                //Add all the online nodes to our database
                 foreach (var obj in results)
                 {
                     result = obj;
                     nodes.Add(result);
                 }
-                //Save the new areas locally
+                //Save the new nodes locally
                 saveLocalType("nodes");
             }
             catch (Exception e)
@@ -286,25 +291,26 @@ namespace bingocalc
                 Close();
             }
         }
+        //Downloads all the online paths and saves them locally
         private async Task downloadPaths()
         {
             ParseObject result;
             try
             {
-                //If an online nodes exists
+                //Quer the online paths
                 var query = from path in ParseObject.GetQuery("path")
                             where path.Get<string>("ID") != "-1"
                             select path;
                 IEnumerable<ParseObject> results = await query.FindAsync();
                 //Clear our array
                 paths.Clear();
-                //Add all the online objects to our database
+                //Add all the online paths to our database
                 foreach (var obj in results)
                 {
                     result = obj;
                     paths.Add(result);
                 }
-                //Save the new areas locally
+                //Save the new paths locally
                 saveLocalType("paths");
             }
             catch (Exception e)
@@ -314,13 +320,13 @@ namespace bingocalc
                 Close();
             }
         }
-
+        //Downloads all the online objects and saves them locally
         private async Task downloadObjects()
         {
             ParseObject result;
             try
             {
-                //If an online nodes exists
+                //Query all of the online objects
                 var query = from ob in ParseObject.GetQuery("object")
                             where ob.Get<string>("ID") != "-1"
                             select ob;
@@ -333,7 +339,7 @@ namespace bingocalc
                     result = obj;
                     objects.Add(result);
                 }
-                //Save the new areas locally
+                //Save the new objects locally
                 saveLocalType("objects");
             }
             catch (Exception e)
@@ -343,13 +349,13 @@ namespace bingocalc
                 Close();
             }
         }
-
+        //Downloads the online DBID locally
         private async Task downloadDBID()
         {
             ParseObject result = new ParseObject("DBID");
             try
             {
-                //If an online version exists, delete it first
+                //Query for the online DBID
                 var query = from DBID in ParseObject.GetQuery("DBID")
                             where DBID.Get<string>("ID") != "-1"
                             select DBID;
@@ -369,11 +375,13 @@ namespace bingocalc
                 }
                 else
                 {
-                    //
+                    //Set our local DBID values
                     DBID["ID"] = result["ID"];
                     DBID["areas"] = result["areas"];
                     DBID["nodes"] = result["nodes"];
                     DBID["paths"] = result["paths"];
+                    //Write it to disk
+                    writeFile(getValues(DBID), "DBID.data");
                 }
             }
             catch (Exception e)
@@ -389,7 +397,7 @@ namespace bingocalc
             ParseObject result = new ParseObject("DBID");
             try
             {
-                //If an online version exists, delete it first
+                //Query the online DBID
                 var query = from DBID in ParseObject.GetQuery("DBID")
                             where DBID.Get<string>("ID") != "-1"
                             select DBID;
@@ -429,20 +437,22 @@ namespace bingocalc
             }
             catch (Exception e)
             {
-                MessageBox.Show("The version download failed, please try again.", "Download Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("The DBID download failed, please try again.", "Download Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
                 Console.WriteLine("Exception: " + e.Message);
             }
         }
 
         //Checks the online version number of the program
+        //If there is an update to the program it will prompt the user if they want to download it
+        //The user will not be able to use the app until they download the new version
         private async Task checkOnlineVersion()
         {
 
             ParseObject result = new ParseObject("version");
             try
             {
-                //If an online version exists
+                //Query the online database for the version number
                 var query = from version in ParseObject.GetQuery("version")
                             where version.Get<string>("number") != "1"
                             select version;
@@ -482,23 +492,23 @@ namespace bingocalc
                             {
                                 Directory.CreateDirectory(resourceDownloadFolder);
                             }
+                            //Store the info we need in order to download the new app in info
                             info.Add("bingocalc");
                             info.Add(result["number"].ToString());
                             info.Add("aDate");
                             info.Add(result["link"].ToString());
                             info.Add("update.zip");
-
+                            //Actually download the update
                             bool updateChecked = webdata.downloadFromWeb(info[3], info[4], resourceDownloadFolder);
                             if (updateChecked)
                             {
-                                //Actually download the program and update it:
-
+                                //If we have the update then hand it off to the update app to handle the update
                                 update.installUpdateRestart(info[3], info[4], "\"" + Application.StartupPath + "\\", processToEnd, postProcess, "updated", updater);
                                 Close();
                             }
                             else
                             {
-                                //it failed end the program
+                                //Failed to update, end the program
                                 MessageBox.Show("The version download failed, please try again.", "Download Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 Close();
                             }
@@ -507,6 +517,7 @@ namespace bingocalc
                         }
                         else
                         {
+                            //The user doesnt want to update
                             //Don't update and close the program
                             Close();
                         }
@@ -522,7 +533,7 @@ namespace bingocalc
             }
             //version up to date now lets handle the DBID:
             DBID = new ParseObject("DBID");
-
+            //Read our local DBID if it exists
             ArrayList DBIDValues = readFile("DBID.data");
             if (DBIDValues == null)
             {
@@ -536,7 +547,8 @@ namespace bingocalc
                     DBID["paths"] = Int32.Parse(result["counter"].ToString());
                     DBID["objects"] = Int32.Parse(result["counter"].ToString());
                     result["counter"] = Int32.Parse(result["counter"].ToString()) + 1;
-
+                    //User the counter from the online DBID increment it so that everyone has a unique ID
+                    //This could backfire if we run out of ints Kappa
                     await result.SaveAsync();
                     writeFile(getValues(DBID), "DBID.data");
                 }
@@ -550,7 +562,7 @@ namespace bingocalc
             }
             else
             {
-                //DBID found, lets set the values:
+                //DBID found, lets set the values of our DBID
                 setValues(DBID, DBIDValues);
                 ID = Int32.Parse(DBID["ID"].ToString());
             }
@@ -559,7 +571,7 @@ namespace bingocalc
 
         }
 
-        //unpacks command line arguments into
+        //unpacks command line arguments into temp string
         private void unpackCommandline()
         {
             bool commandPresent = false;
@@ -584,13 +596,14 @@ namespace bingocalc
                 }
             }
         }
-        //Save the areas locally on the PC
+        //Takes an argument of type and can save areas, nodes, paths or objects locally
         public void saveLocalType(string type)
         {
             //Loop through all the parse objects and save them into an array
             //Save that array to a local file
             ArrayList data = new ArrayList();
             ArrayList range = new ArrayList();
+            //Sets the range array to the array we want to save
             switch (type)
             {
                 case "areas":
@@ -613,6 +626,7 @@ namespace bingocalc
             }
             foreach (ParseObject o in range)
             {
+                //Loop through each object in the range and add it to the data array
                 ArrayList values = getValues(o);
                 foreach (string s in values)
                 {
@@ -621,28 +635,35 @@ namespace bingocalc
                 //terminator symbol
                 data.Add("~");
             }
+            //Save the data array to disk
             writeFile(data, type + ".data");
         }
-
+        //Takes an argument of type and can load areas, nodes, paths or objects locally
         public void loadLocalType(string type)
         {
+            //Read the file from disk
             ArrayList data = readFile(type + ".data");
             ArrayList currentObject = new ArrayList();
             if (data == null)
             {
                 return;
             }
+            //Loop through each of the data strings
             foreach (string s in data)
             {
                 if (s.Length > 0)
                 {
+                    //If the first character in the string is a tilda
                     if (s[0].Equals('~'))
                     {
-                        //Terminator, create an object
+                        //We know we have a new object
                         if (currentObject.Count > 0)
                         {
+                            //Create the new parse object
                             ParseObject ob = new ParseObject(type.TrimEnd(type[type.Length - 1]));
+                            //Set the values stored
                             setValues(ob, currentObject);
+                            //add it to the appropriate array
                             switch (type)
                             {
                                 case "areas":
@@ -667,12 +688,13 @@ namespace bingocalc
                     }
                     else
                     {
-                        //Add this value to the arraylist
+                        //No new object, add the value to the arraylist
                         currentObject.Add(s);
                     }
                 }
                 else
                 {
+                    //If it's null, add a null string
                     currentObject.Add("");
                 }
             } 
@@ -909,8 +931,6 @@ namespace bingocalc
 
         }
 
-
-        //////////////////////////////////////////////////////
         //Converts ParseObject to ArrayList so that the even numbers are the keys
         //and the odd numbers are the values
         public ArrayList getValues(ParseObject o)
@@ -924,7 +944,8 @@ namespace bingocalc
 
             return data;
         }
-        //Sets the value in the array list every other to the parse object given
+        //Loops through an array list and sets values to a given parse object
+        //Inverse of getValues
         public void setValues(ParseObject o, ArrayList values)
         {
             string lastString = "";
@@ -940,12 +961,12 @@ namespace bingocalc
                 }
             }
         }
-
+        //unused
         private void label1_Click(object sender, EventArgs e)
         {
 
         }
-
+        //Disables all the input functions in the main form
         public void disableInput()
         {
             input = false;
@@ -966,7 +987,7 @@ namespace bingocalc
             editPathButton.Enabled = false;
             deletePathButton.Enabled = false;
         }
-
+        //Enables all the input functions in the main form
         public void enableInput()
         {
             input = true;
@@ -987,8 +1008,7 @@ namespace bingocalc
             editPathButton.Enabled = true;
             deletePathButton.Enabled = true;
         }
-
-
+        //Updates the area, nodes and paths boxs in the main form
         public void updateBoxs()
         {
             //Clear the boxs
@@ -998,6 +1018,7 @@ namespace bingocalc
             string console = consoleBox.SelectedItem.ToString();
             ArrayList child = new ArrayList();
             ArrayList adult = new ArrayList();
+            //Update the areas box such that there is a child and adult section
             foreach (ParseObject o in areas)
             {
                 if (o["console"].ToString().Equals(console) && o["age"].ToString().Equals("Child"))
@@ -1023,15 +1044,17 @@ namespace bingocalc
             }
             
         }
-
+        //Seperate function for updating the nodes and paths boxes
         private void updateNodesAndPaths()
         {
             nodesBox.Items.Clear();
             pathsBox.Items.Clear();
             if (areasBox.SelectedItem == null)
             {
+                //No area selected, return
                 return;
             }
+            //Get the values of the area selected: console, area and age
             string console = consoleBox.SelectedItem.ToString();
             string area = areasBox.SelectedItem.ToString();
             string age = "Adult";
@@ -1047,7 +1070,7 @@ namespace bingocalc
                     break;
                 }
             }
-
+            //Get the nodes based on the values
             foreach (ParseObject o in nodes)
             {
                 if (o["area"].ToString().Equals(area) &&
@@ -1059,7 +1082,7 @@ namespace bingocalc
                 }
             }
             nodesBox.Sorted = true;
-
+            //Get the paths based on the values
             foreach (ParseObject o in paths)
             {
                 if (o["area"].ToString().Equals(area) &&
@@ -1072,9 +1095,7 @@ namespace bingocalc
             }
             pathsBox.Sorted = true;
         }
-        //////////////////////////////////////////////////////////////////////////////
-        // Add an area for updating:                                                //
-        //////////////////////////////////////////////////////////////////////////////
+        //Function that is called when the addAreaButton is clicked
         private void addAreaButton_Click(object sender, EventArgs e)
         {
             //Create a form to add an area:
@@ -1085,6 +1106,8 @@ namespace bingocalc
 
             if (diag == DialogResult.OK)
             {
+                //Dialog returned OK
+                //Get the data from the area
                 ArrayList data = new ArrayList();
                 data.Add("addArea");
                 data.Add(form.name);
@@ -1099,7 +1122,7 @@ namespace bingocalc
 
             }
         }
-
+        //This function gets called when the databases are synced and we want to add the area
         private async Task addArea(ArrayList data)
         {
             if (data.Count < 4)
@@ -1129,7 +1152,7 @@ namespace bingocalc
             writeFile(getValues(DBID), "DBID.data");
 
         }
-
+        //Function that is called when the editAreaButton is clicked
         private void editAreaButton_Click(object sender, EventArgs e)
         {
             if (areasBox.SelectedItem == null)
@@ -1167,6 +1190,8 @@ namespace bingocalc
 
             if (diag == DialogResult.OK)
             {
+                //Dialog returned OK
+                //Get the data from the area
                 ArrayList data = new ArrayList();
                 data.Add("editArea");
                 data.Add(form.name);
@@ -1182,7 +1207,7 @@ namespace bingocalc
 
             }
         }
-
+        //This function gets called when the databases are synced and we want to edit the area
         private async Task editArea(ArrayList data)
         {
             if (data.Count < 5)
@@ -1367,7 +1392,7 @@ namespace bingocalc
             await uploadDBID();
             writeFile(getValues(DBID), "DBID.data");
         }
-        
+        //Function that is called when the deleteAreaButton is clicked
         private void deleteAreaButton_Click(object sender, EventArgs e)
         {
             //Error checking:
@@ -1422,6 +1447,8 @@ namespace bingocalc
 
             if (diag == DialogResult.OK)
             {
+                //Dialog returned OK
+                //Get the data from the area
                 ArrayList data = new ArrayList();
                 data.Add("deleteArea");
                 data.Add(name);
@@ -1437,7 +1464,7 @@ namespace bingocalc
 
             }
         }
-
+        //This function gets called when the databases are synced and we want to delete the area
         private async Task deleteArea(ArrayList data)
         {
             if (data.Count < 4)
@@ -1501,6 +1528,7 @@ namespace bingocalc
             await uploadDBID();
             writeFile(getValues(DBID), "DBID.data");
         }
+        //Function that is called when the addNodeButton is clicked
         private void addNodeButton_Click(object sender, EventArgs e)
         {
             //Create a form to add an area:
@@ -1540,6 +1568,8 @@ namespace bingocalc
 
             if (diag == DialogResult.OK)
             {
+                //Dialog returned OK
+                //Get the data from the node
                 ArrayList data = new ArrayList();
                 data.Add("addNode");
                 data.Add(form.name);
@@ -1555,7 +1585,7 @@ namespace bingocalc
 
             }
         }
-
+        //This function gets called when the databases are synced and we want to add the node
         private async Task addNode(ArrayList data)
         {
             if (data.Count < 5)
@@ -1587,7 +1617,7 @@ namespace bingocalc
             writeFile(getValues(DBID), "DBID.data");
 
         }
-
+        //Function that is called when the editNodeButton is clicked
         private void editNodeButton_Click(object sender, EventArgs e)
         {
             //Create a form to add an area:
@@ -1602,7 +1632,7 @@ namespace bingocalc
                 return;
             }
 
-            //send the area data
+            //get the area data
             string name = nodesBox.SelectedItem.ToString();
             string area = areasBox.SelectedItem.ToString();
             string console = consoleBox.SelectedItem.ToString();
@@ -1619,6 +1649,7 @@ namespace bingocalc
                     break;
                 }
             }
+            //send the area data to the form
             form.name = name;
             form.area = area;
             form.console = console;
@@ -1629,6 +1660,8 @@ namespace bingocalc
 
             if (diag == DialogResult.OK)
             {
+                //Dialog returned OK
+                //Get the data from the node
                 ArrayList data = new ArrayList();
                 data.Add("editNode");
                 data.Add(form.name);
@@ -1645,7 +1678,7 @@ namespace bingocalc
 
             }
         }
-
+        //This function gets called when the databases are synced and we want to edit the node
         private async Task editNode(ArrayList data)
         {
             if (data.Count < 6)
@@ -1654,7 +1687,7 @@ namespace bingocalc
                 MessageBox.Show("Editing Node failed", "Array Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            //Upload the new path
+            //Upload the new node
 
             string name = (string)data[1];
             string area = (string)data[2];
@@ -1666,12 +1699,12 @@ namespace bingocalc
             ArrayList pathsToUpdate = new ArrayList();
             try
             {
-                //If an online nodes exists
+                //Query the online paths
                 var query = from path in ParseObject.GetQuery("path")
                             where path.Get<string>("ID") != "-1"
                             select path;
                 IEnumerable<ParseObject> results = await query.FindAsync();
-                //Add all the online objects to our database
+                //if we need to update the path add it to the array
                 foreach (var obj in results)
                 {
                     if (obj["age"].ToString().Equals(age) &&
@@ -1783,7 +1816,7 @@ namespace bingocalc
             await uploadDBID();
             writeFile(getValues(DBID), "DBID.data");
         }
-
+        //Function that is called when the deleteNodeButton is clicked
         private void deleteNodeButton_Click(object sender, EventArgs e)
         {
             //Error checking:
@@ -1831,6 +1864,8 @@ namespace bingocalc
 
             if (diag == DialogResult.OK)
             {
+                //Dialog returned OK
+                //Get the data from the node
                 ArrayList data = new ArrayList();
                 data.Add("deleteNode");
                 data.Add(name);
@@ -1848,7 +1883,7 @@ namespace bingocalc
             }
 
         }
-
+        //This function gets called when the databases are synced and we want to remove the node
         private async Task deleteNode(ArrayList data)
         {
             if (data.Count < 5)
@@ -1857,7 +1892,8 @@ namespace bingocalc
                 MessageBox.Show("Deleting Node failed", "Array Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            //Delete the new path
+            //Delete the path
+
             string name = (string)data[1];
             string area = (string)data[2];
             string age = (string)data[3];
@@ -1866,12 +1902,12 @@ namespace bingocalc
             ParseObject result = new ParseObject("node");
             try
             {
-                //If an online path exists
+                //Query the database for nodes
                 var query = from node in ParseObject.GetQuery("node")
                             where node.Get<string>("ID") != "-1"
                             select node;
                 IEnumerable<ParseObject> results = await query.FindAsync();
-                //Find the path we are looking for
+                //Find the node we are looking for
                 foreach (var obj in results)
                 {
                     if (obj["name"].ToString().Equals(name) &&
@@ -1917,7 +1953,7 @@ namespace bingocalc
             writeFile(getValues(DBID), "DBID.data");
 
         }
-
+        //Function that is called when the addPathButton is clicked
         private void addPathButton_Click(object sender, EventArgs e)
         {
             //Create a form to add an area:
@@ -1960,6 +1996,8 @@ namespace bingocalc
 
             if (diag == DialogResult.OK)
             {
+                //Dialog returned OK
+                //Get the data from the path
                 ArrayList data = new ArrayList();
                 data.Add("addPath");
                 data.Add(form.name);
@@ -1991,7 +2029,7 @@ namespace bingocalc
 
             }
         }
-
+        //This function gets called when the databases are synced and we want to add the path
         private async Task addPath(ArrayList data)
         {
             if (data.Count < 20)
@@ -2055,8 +2093,7 @@ namespace bingocalc
             writeFile(getValues(DBID), "DBID.data");
 
         }
-
-        //Edit the current selected path
+        //Function that is called when the editPathButton is clicked
         private void editPathButton_Click(object sender, EventArgs e)
         {
             //error checking
@@ -2139,6 +2176,8 @@ namespace bingocalc
 
             if (diag == DialogResult.OK)
             {
+                //Dialog returned OK
+                //Get the data from the path
                 ArrayList data = new ArrayList();
                 data.Add("editPath");
                 data.Add(form.name);
@@ -2173,7 +2212,7 @@ namespace bingocalc
 
 
         }
-
+        //This function gets called when the databases are synced and we want to edit the path
         private async Task editPath(ArrayList data)
         {
             if (data.Count < 21)
@@ -2207,7 +2246,7 @@ namespace bingocalc
             ParseObject result = new ParseObject("path");
             try
             {
-                //If an online nodes exists
+                //Query the online paths
                 var query = from path in ParseObject.GetQuery("path")
                             where path.Get<string>("ID") != "-1"
                             select path;
@@ -2279,7 +2318,7 @@ namespace bingocalc
             writeFile(getValues(DBID), "DBID.data");
 
         }
-
+        //Function that is called when the deletePathButton is clicked
         private void deletePathButton_Click(object sender, EventArgs e)
         {
             //Error checking:
@@ -2316,6 +2355,8 @@ namespace bingocalc
 
             if (diag == DialogResult.OK)
             {
+                //Dialog returned OK
+                //Get the data from the path
                 ArrayList data = new ArrayList();
                 data.Add("deletePath");
                 data.Add(name);
@@ -2332,7 +2373,7 @@ namespace bingocalc
 
             }
         }
-
+        //This function gets called when the databases are synced and we want to delete the path
         private async Task deletePath(ArrayList data)
         {
             if (data.Count < 5)
@@ -2350,7 +2391,7 @@ namespace bingocalc
             ParseObject result = new ParseObject("path");
             try
             {
-                //If an online path exists
+                //Query the online paths
                 var query = from path in ParseObject.GetQuery("path")
                             where path.Get<string>("ID") != "-1"
                             select path;
@@ -2401,7 +2442,7 @@ namespace bingocalc
             writeFile(getValues(DBID), "DBID.data");
 
         }
-
+        //This function gets called when the databases are synced and we want to add the object
         private async Task addObject(ArrayList data)
         {
             updateBoxs();
@@ -2429,7 +2470,7 @@ namespace bingocalc
             updateBoxs();
 
         }
-
+        //This function gets called when the databases are synced and we want to edit the object
         private async Task editObject(ArrayList data)
         {
             if (data.Count < 3)
@@ -2614,7 +2655,7 @@ namespace bingocalc
             await uploadDBID();
             writeFile(getValues(DBID), "DBID.data");
         }
-
+        //This function gets called when the databases are synced and we want to delete the object
         private async Task deleteObject(ArrayList data)
         {
             if (data.Count < 2)
@@ -2677,19 +2718,22 @@ namespace bingocalc
         {
 
         }
-
+        //If console box selected index is changes
         private void consoleBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            //Then update the boxes
             updateBoxs();
         }
-
+        //If the areas box index is changed
         private void areasBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            //Error checking
             if (areasBox.SelectedItem == null) return;
             if (areasBox.SelectedItem.ToString() == "-- ADULT --" || areasBox.SelectedItem.ToString() == "-- CHILD --")
             {
                 areasBox.SelectedIndex = -1;
             }
+            //Else update the nodes and paths
             updateNodesAndPaths();
         }
 

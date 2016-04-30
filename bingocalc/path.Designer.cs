@@ -347,7 +347,7 @@
             this.createArea.TabIndex = 53;
             this.createArea.Text = "Create";
             this.createArea.UseVisualStyleBackColor = true;
-            this.createArea.Click += new System.EventHandler(this.createArea_Click);
+            this.createArea.Click += new System.EventHandler(this.createPath_Click);
             // 
             // nodeEndBox
             // 

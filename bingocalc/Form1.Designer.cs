@@ -50,7 +50,7 @@
             this.deletePathButton = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.objectManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.objectManagerButton = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -242,19 +242,19 @@
             // 
             this.menuStrip1.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.objectManagerToolStripMenuItem});
+            this.objectManagerButton});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(462, 24);
             this.menuStrip1.TabIndex = 18;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // objectManagerToolStripMenuItem
+            // objectManagerButton
             // 
-            this.objectManagerToolStripMenuItem.Name = "objectManagerToolStripMenuItem";
-            this.objectManagerToolStripMenuItem.Size = new System.Drawing.Size(104, 20);
-            this.objectManagerToolStripMenuItem.Text = "Object Manager";
-            this.objectManagerToolStripMenuItem.Click += new System.EventHandler(this.objectManagerToolStripMenuItem_Click);
+            this.objectManagerButton.Name = "objectManagerButton";
+            this.objectManagerButton.Size = new System.Drawing.Size(104, 20);
+            this.objectManagerButton.Text = "Object Manager";
+            this.objectManagerButton.Click += new System.EventHandler(this.objectManagerToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -317,7 +317,7 @@
         private System.Windows.Forms.Button deletePathButton;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem objectManagerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem objectManagerButton;
     }
 }
 
