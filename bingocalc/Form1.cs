@@ -1107,6 +1107,18 @@ namespace bingocalc
             if (diag == DialogResult.OK)
             {
                 //Dialog returned OK
+                //Check to make sure the area doesnt already exist
+                foreach (ParseObject o in areas)
+                {
+                    if (o["name"].ToString().Equals(form.name) &&
+                        o["age"].ToString().Equals(form.age) &&
+                        o["console"].ToString().Equals(form.console)
+                        )
+                    {
+                        MessageBox.Show("This area already exists.", "Area Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
                 //Get the data from the area
                 ArrayList data = new ArrayList();
                 data.Add("addArea");
@@ -1191,6 +1203,18 @@ namespace bingocalc
             if (diag == DialogResult.OK)
             {
                 //Dialog returned OK
+                //Check to make sure the area doesnt already exist
+                foreach (ParseObject o in areas)
+                {
+                    if (o["name"].ToString().Equals(form.name) &&
+                        o["age"].ToString().Equals(form.age) &&
+                        o["console"].ToString().Equals(form.console)
+                        )
+                    {
+                        MessageBox.Show("This area already exists.", "Area Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
                 //Get the data from the area
                 ArrayList data = new ArrayList();
                 data.Add("editArea");
@@ -1569,6 +1593,21 @@ namespace bingocalc
             if (diag == DialogResult.OK)
             {
                 //Dialog returned OK
+                
+                //Check to make sure the node doesnt exist
+                foreach (ParseObject o in nodes)
+                {
+                    if (o["name"].ToString().Equals(form.name) &&
+                        o["area"].ToString().Equals(form.area) &&
+                        o["age"].ToString().Equals(form.age) &&
+                        o["console"].ToString().Equals(form.console)
+                        ) 
+                    {
+                        MessageBox.Show("This node already exists.", "Node Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+
                 //Get the data from the node
                 ArrayList data = new ArrayList();
                 data.Add("addNode");
@@ -1661,6 +1700,20 @@ namespace bingocalc
             if (diag == DialogResult.OK)
             {
                 //Dialog returned OK
+                //Check to make sure the node doesnt already exist
+                foreach (ParseObject o in nodes)
+                {
+                    if (o["name"].ToString().Equals(form.name) &&
+                        o["area"].ToString().Equals(form.area) &&
+                        o["age"].ToString().Equals(form.age) &&
+                        o["console"].ToString().Equals(form.console)
+                        )
+                    {
+                        MessageBox.Show("This node already exists.", "Node Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+
                 //Get the data from the node
                 ArrayList data = new ArrayList();
                 data.Add("editNode");
@@ -1997,6 +2050,19 @@ namespace bingocalc
             if (diag == DialogResult.OK)
             {
                 //Dialog returned OK
+                //Check to make sure the path doesnt already exist
+                foreach (ParseObject o in paths)
+                {
+                    if (o["name"].ToString().Equals(form.name) &&
+                        o["area"].ToString().Equals(form.area) &&
+                        o["age"].ToString().Equals(form.age) &&
+                        o["console"].ToString().Equals(form.console)
+                        )
+                    {
+                        MessageBox.Show("This path already exists.", "Path Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
                 //Get the data from the path
                 ArrayList data = new ArrayList();
                 data.Add("addPath");
@@ -2177,6 +2243,19 @@ namespace bingocalc
             if (diag == DialogResult.OK)
             {
                 //Dialog returned OK
+                //Check to make sure the path doesnt already exist
+                foreach (ParseObject o in paths)
+                {
+                    if (o["name"].ToString().Equals(form.name) &&
+                        o["area"].ToString().Equals(form.area) &&
+                        o["age"].ToString().Equals(form.age) &&
+                        o["console"].ToString().Equals(form.console)
+                        )
+                    {
+                        MessageBox.Show("This path already exists.", "Path Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
                 //Get the data from the path
                 ArrayList data = new ArrayList();
                 data.Add("editPath");

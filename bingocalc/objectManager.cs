@@ -60,6 +60,16 @@ namespace bingocalc
 
             if (diag == DialogResult.OK)
             {
+                //Dialog returned OK
+                //Check to make sure the object doesnt already exist
+                foreach (ParseObject o in objects)
+                {
+                    if (o["name"].ToString().Equals(form.name))
+                    {
+                        MessageBox.Show("This object already exists.", "Object Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
                 ArrayList data = new ArrayList();
                 data.Add("addObject");
                 data.Add(form.name);
@@ -88,6 +98,16 @@ namespace bingocalc
 
             if (diag == DialogResult.OK)
             {
+                //Dialog returned OK
+                //Check to make sure the object doesnt already exist
+                foreach (ParseObject o in objects)
+                {
+                    if (o["name"].ToString().Equals(form.name))
+                    {
+                        MessageBox.Show("This object already exists.", "Object Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
                 ArrayList data = new ArrayList();
                 data.Add("editObject");
                 data.Add(form.name);
