@@ -1760,8 +1760,8 @@ namespace bingocalc
                 //if we need to update the path add it to the array
                 foreach (var obj in results)
                 {
+                    //If it's in this area
                     if (obj["age"].ToString().Equals(age) &&
-                        obj["area"].ToString().Equals(area) &&
                         obj["console"].ToString().Equals(console)
                         )
                     {
@@ -1770,6 +1770,7 @@ namespace bingocalc
                             pathsToUpdate.Add(obj);
                         }
                     }
+                    
                 }
             }
             catch (Exception e)
@@ -1787,7 +1788,6 @@ namespace bingocalc
                 {
                     if (o2["name"].ToString().Equals(o["name"].ToString()) &&
                         o2["age"].ToString().Equals(o["age"].ToString()) &&
-                        o2["area"].ToString().Equals(o["area"].ToString()) &&
                         o2["console"].ToString().Equals(o["console"].ToString())
                         )
                     {
@@ -2244,7 +2244,7 @@ namespace bingocalc
             {
                 //Dialog returned OK
                 //Check to make sure the path doesnt already exist
-                foreach (ParseObject o in paths)
+                /*foreach (ParseObject o in paths)
                 {
                     if (o["name"].ToString().Equals(form.name) &&
                         o["area"].ToString().Equals(form.area) &&
@@ -2255,7 +2255,7 @@ namespace bingocalc
                         MessageBox.Show("This path already exists.", "Path Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                }
+                }*/
                 //Get the data from the path
                 ArrayList data = new ArrayList();
                 data.Add("editPath");
