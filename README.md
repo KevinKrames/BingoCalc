@@ -59,9 +59,9 @@ Amarec TV records the video file. I use the codev x264 to compress it so it's no
 ###Time of Day
 * Work in Progress
 
-Amarec TV:
-http://www.amarectv.com/english/amarectv_e.htm
-x264 codec:
-https://sourceforge.net/projects/x264vfw/files/latest/download
-Virtual Dub:
-http://virtualdub.sourceforge.net/
+######Amarec TV:
+######http://www.amarectv.com/english/amarectv_e.htm
+######x264 codec:
+######https://sourceforge.net/projects/x264vfw/files/latest/download
+######Virtual Dub:
+######http://virtualdub.sourceforge.net/
