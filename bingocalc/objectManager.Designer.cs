@@ -86,6 +86,7 @@
             this.searchBox.Name = "searchBox";
             this.searchBox.Size = new System.Drawing.Size(232, 20);
             this.searchBox.TabIndex = 4;
+            this.searchBox.TextChanged += new System.EventHandler(this.searchBox_TextChanged);
             // 
             // panel1
             // 

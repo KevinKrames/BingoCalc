@@ -54,7 +54,7 @@ namespace bingocalc
             form.Text = "Add Object";
 
             //send the area data
-            
+
 
             DialogResult diag = form.ShowDialog();
 
@@ -223,6 +223,30 @@ namespace bingocalc
                 objectsBox.Items.Add(o["name"].ToString());
                 objectsBox.Sorted = true;
             }
+        }
+        //Updates the boxs so that it searchs for a key string
+        public void updateBoxs(ArrayList obs)
+        {
+            objectsBox.Items.Clear();
+            foreach (ParseObject o in obs)
+            {
+                objectsBox.Items.Add(o["name"].ToString());
+                objectsBox.Sorted = true;
+            }
+        }
+        //Function for searching for a specific object
+        private void searchBox_TextChanged(object sender, EventArgs e)
+        {
+            //Create ArrayList to search for
+            ArrayList obs = new ArrayList();
+            foreach (ParseObject o in objects)
+            {
+                if (o["name"].ToString().ToLower().Contains(searchBox.Text.ToLower()))
+                {
+                    obs.Add(o);
+                }
+            }
+            updateBoxs(obs);
         }
     }
 }

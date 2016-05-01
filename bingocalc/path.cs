@@ -497,5 +497,45 @@ namespace bingocalc
             prohibitedObjectsBox.SelectedIndex = prohibitedObjectsBox.Items.IndexOf(prohibitedObjectsAvailableBox.SelectedItem);
             prohibitedObjectsAvailableBox.Items.Remove(prohibitedObjectsAvailableBox.SelectedItem);
         }
+
+        //Updates the boxs so that it searchs for a key string
+        public void updateBoxs(ArrayList obs)
+        {
+            objectsAvailableBox.Items.Clear();
+            requiredObjectsAvailableBox.Items.Clear();
+            prohibitedObjectsAvailableBox.Items.Clear();
+            foreach (ParseObject o in obs)
+            {
+                if (!objectsObtainedBox.Items.Contains(o["name"].ToString()))
+                {
+                    objectsAvailableBox.Items.Add(o["name"].ToString());
+                    objectsAvailableBox.Sorted = true;
+                }
+                if (!requiredObjectsBox.Items.Contains(o["name"].ToString()))
+                {
+                    requiredObjectsAvailableBox.Items.Add(o["name"].ToString());
+                    requiredObjectsAvailableBox.Sorted = true;
+                }
+                if (!prohibitedObjectsBox.Items.Contains(o["name"].ToString()))
+                {
+                    prohibitedObjectsAvailableBox.Items.Add(o["name"].ToString());
+                    prohibitedObjectsAvailableBox.Sorted = true;
+                }
+            }
+        }
+
+        private void searchBox_TextChanged(object sender, EventArgs e)
+        {
+            //Create ArrayList to search for
+            ArrayList obs = new ArrayList();
+            foreach (ParseObject o in objects)
+            {
+                if (o["name"].ToString().ToLower().Contains(searchBox.Text.ToLower()))
+                {
+                    obs.Add(o);
+                }
+            }
+            updateBoxs(obs);
+        }
     }
 }
