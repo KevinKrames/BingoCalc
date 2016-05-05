@@ -45,7 +45,7 @@ namespace bingocalc
         public Form1()
         {
             InitializeComponent();
-            consoleBox.SelectedIndex = 1;
+            consoleBox.SelectedIndex = 2;
             transferArray = new ArrayList();
             transferBool = false;
             this.Text = "Bingo Calculator - Version " + versionNumber;
@@ -509,7 +509,7 @@ namespace bingocalc
                             else
                             {
                                 //Failed to update, end the program
-                                MessageBox.Show("The version download failed, please try again.", "Download Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show("The version download from web failed, please try again.", "Download Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 Close();
                             }
 

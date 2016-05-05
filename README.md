@@ -54,7 +54,19 @@ This is an event in the path that is dependent on the day-night cycle in game. F
 
 ###Timing a Path
 To time the paths here are the software that I use.
-Amarec TV records the video file. I use the codev x264 to compress it so it's not enormous. I use virtual dub for timing the video file. You just simple find the frame that is all white/black and subtract the first frame of movement from that. If the ending node is not a loading zone, you just end it on first frame of input.
+Amarec TV records the video file. I use the codev x264 to compress it so it's not enormous. I use virtual dub for timing the video file. You just simply find the frame that is all white/black and subtract the first frame of movement from that. If the ending node is not a loading zone, you just end it on first frame of input.
+
+For pausing, if you have to pause to equip in the path then you must exclude it from the timing, the pausing will be done on the programming side. To disclude pausing in the time you must get the total time and subtract the pause time. If you are confused at how to do this you must time the frame on which you regain input minus the time at which you pause.
+
+For pause buffering you can leave this time in the path, as it is meant to be an accurate representation of skill.
+
+****
+May include video tutorial if needed.
+****
+
+If you so desire you may record multiple times on a path or time a path that already exists and add your time to it. This data can also be important to get a wide range of skills for completing a path.
+
+I would prefer it if you didn't use a timer for timing a path because it leaves it up to human error. Especially when it comes to time of day and pausing since the timer does not account for these things.
 
 ###Time of Day
 * Work in Progress

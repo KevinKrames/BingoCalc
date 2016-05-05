@@ -129,7 +129,9 @@
             this.consoleBox.FormattingEnabled = true;
             this.consoleBox.Items.AddRange(new object[] {
             "Nintendo 64",
-            "Virtual Console"});
+            "Nintendo 64(JP)",
+            "Virtual Console",
+            "Virtual Console(JP)"});
             this.consoleBox.Location = new System.Drawing.Point(237, 28);
             this.consoleBox.Name = "consoleBox";
             this.consoleBox.Size = new System.Drawing.Size(121, 21);
@@ -260,7 +262,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.Control;
+            this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(462, 677);
             this.Controls.Add(this.deletePathButton);
             this.Controls.Add(this.editPathButton);
